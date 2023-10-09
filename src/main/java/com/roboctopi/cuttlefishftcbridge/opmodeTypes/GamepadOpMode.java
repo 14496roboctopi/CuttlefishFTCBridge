@@ -1,7 +1,6 @@
 package com.roboctopi.cuttlefishftcbridge.opmodeTypes;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-public abstract class GamepadOpmode extends RoboctopiOpmode {
+public abstract class GamepadOpMode extends CuttlefishOpMode {
     boolean a1Down = false;
     boolean b1Down = false;
     boolean x1Down = false;

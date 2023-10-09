@@ -2,9 +2,8 @@ package com.roboctopi.cuttlefishftcbridge.opmodeTypes;
 // Most basic iterative Opmode with no gamepad or robot initialization
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-public abstract class RoboctopiOpmode extends LinearOpMode
+public abstract class CuttlefishOpMode extends LinearOpMode
 {
     long start = System.nanoTime();
     public long runtime = 0;

@@ -26,10 +26,7 @@ import com.qualcomm.hardware.lynx.commands.standard.LynxStandardCommand;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PWMOutput;
 import com.qualcomm.robotcore.hardware.PwmControl;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants;
 import com.qualcomm.robotcore.hardware.usb.RobotArmingStateNotifier;
 import com.qualcomm.robotcore.util.Range;
@@ -92,7 +89,7 @@ public class CuttleRevHub  extends LynxCommExceptionHandler implements RobotArmi
          }
       }
       bulkData = new CuttleRevBulkData();
-      getBulkDataSync();
+      pullBulkData();
 
 
    }
@@ -113,7 +110,7 @@ public class CuttleRevHub  extends LynxCommExceptionHandler implements RobotArmi
             break;
       }
       bulkData = new CuttleRevBulkData();
-      getBulkDataSync();
+      pullBulkData();
    }
 
    /**
@@ -401,9 +398,8 @@ public class CuttleRevHub  extends LynxCommExceptionHandler implements RobotArmi
    /**
     * Pull bulk data from the hub. This should be called every loop cycle if any non - i2c sensors are in use.
     * <br>
-    * Async version may be coming soon to a Cuttlefish near you.
     */
-   public void getBulkDataSync() {
+   public void pullBulkData() {
       LynxGetBulkInputDataCommand cmd = new LynxGetBulkInputDataCommand(revHub);
 
       // TODO revHub.sendCommand(cmd);
