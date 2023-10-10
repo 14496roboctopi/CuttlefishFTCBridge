@@ -5,7 +5,9 @@ import com.roboctopi.cuttlefish.components.Servo;
 import java.util.ArrayList;
 
 /**
- * Cuttlefish compatible servo
+ * Cuttlefish compatible servo.
+ * Contains a list of preset positions which can be appended to using the addPreset() function.
+ *
  * */
 public class CuttleServo implements Servo {
 
@@ -45,6 +47,10 @@ public class CuttleServo implements Servo {
 
     }
 
+    /**
+     * Set the target position of the servo
+     * @param position Target position
+     * */
     @Override
     public void setPosition(double position) {
         pos = position;
