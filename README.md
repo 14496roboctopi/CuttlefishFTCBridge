@@ -14,17 +14,17 @@ This library also acts as a bridge between the main Cuttlefish library and the F
 ### Basic
 
 ### Advanced
-Here is how to add cuttlefish to your project directly as a repository. This is useful if you are planning to modify the library yourself
+Here is how to add CuttlefishFTCBridge to your project directly as a repository. This is useful if you are planning to modify the library yourself
 
-Clone Cuttlefish into the top level folder of your project. This can be done with the following command in git bash:
+Clone CuttlefishFTCBridge into the top level folder of your project. This can be done with the following command in git bash:
 ```bash
-git clone https://github.com/14496roboctopi/cuttlefish
+git clone https://github.com/14496roboctopi/CuttlefishFTCBridge
 ```
 If you have forked the library then you can use the URL to your library instead. Note: Copy and pasting into the windows git bash is sometimes buggy, meaning that if you copy and paste this into the windows git bash it might throw an error if you don't retype certain parts of it.
 
 Another option instead of cloning the library in directly is to add it as a submodule. This is useful if you are using git for your project as it tells git to retrive the project from a seperate repository rather than including it in your main repoisitory. It can be added as a submodule using the following command:
 ```bash
-git submodule add https://github.com/14496roboctopi/cuttlefish
+git submodule add https://github.com/14496roboctopi/CuttlefishFTCBridge
 ```
 DO NOT RUN THIS COMMAND IN ADDITION TO THE FIRST COMMAND. 
 If you choose to go with this option then you will need to push and pull the submodule seperately from the rest of your git. You will also need to run the commands git submodule init, and git submodule update whenever you set up a new copy of the repo on a different computer in order to pull the submodule into your project.
@@ -37,15 +37,16 @@ This tells gradle to include the kotlin plugin in your project.
 
 Now open settings.gradle which can also be found under gradle scripts and add the following line:
 ```groovy
-include ':cuttlefish'
+include ':CuttlefishFTCBridge'
 ```
-This tells gradle that the cuttlefish folder is a module in your project.
+This tells gradle that the CuttlefishFTCBridge folder is a module in your project.
 
 Finally, locate the TeamCode build.gradle file. This is the build.gradle file that says (Moduke: TeamCode) in parentheses. In the dependencies block of this file add the following line:
 ```groovy
-implementation project(path: ':cuttlefish')
+implementation project(path: ':CuttlefishFTCBridge')
 ```
-This adds cuttlefish as a dependency of your teamcode module allowing it to be used in teamcode.
+This adds CuttlefishFTCBridge as a dependency of your teamcode module allowing it to be used in teamcode.
+Make sure that after making changes to the gradle scripts that you click `sync now` in the top right of your code window.
 
 
 ### CuttleRevHub
@@ -74,9 +75,10 @@ CuttleDigital digital_sensor = hub.getDigital(3 /*Digital Port Number*/ );
 These devices can be used like their stock counterparts. For a detailed description of their functionality see their <a href="/CuttlefishFTCBridge/com.roboctopi.cuttlefishftcbridge.devices/index.html">reference documentation</a>.
 
 <h2 id = "initialized-opmode">Initialized OpMode</h2>
-As this library negates the config file, you will need to create a system to replace it. There are different ways that you can do this, but we reccomend creating an "initialized opmode". This is an abstract class that initializes everything on your robot that you can extend instead of extending the default `OpMode` or `LinearOpMode` classes. This can be created in the same manner as a normal opmode would be created, except that `@TeleOp` or `@Autonomous` is ommited, and that it is declared as an abstract class instead of a normal class. We also reccomend that in your initialized opmode you extend `GamepadOpmode` or `CuttlefishOpMode` which are similar to the default iterative opmode except that it internally uses its own while loop as we have noticed intermitent performance problems in the iterative opmode loop. `GamepadOpMode` has built in functions that are called when buttons on the gamepad are pressed or released which is useful for TeleOp programming. Here is a basic example of an initialized OpMode:
+
+The purpose of the built in device config is to allow you to change the port that a device is plugged without having to update every opmode that uses that device. This is desirable as manually changing every opmode every time you change hardware is bad. Since this library negates the built in config system, it is a good idea to put something else in place to allow for devices to be initialized the same across all opmodes. There are different ways that you can do this, but we recommend creating an "initialized opmode". This is an abstract class that initializes everything on your robot that you can extend instead of extending the default `OpMode` or `LinearOpMode` classes. This can be created in the same manner as a normal opmode would be created, except that `@TeleOp` or `@Autonomous` is ommited, and that it is declared as an abstract class instead of a normal class. We also recommend that in your initialized opmode you extend `GamepadOpmode` or `CuttlefishOpMode` which are similar to the default iterative opmode except that it internally uses its own while loop as we have noticed intermitent performance problems in the iterative opmode loop. `GamepadOpMode` has built in functions that are called when buttons on the gamepad are pressed or released which is useful for TeleOp programming. Here is a basic example of an Initialized OpMode:
 ```java
-public abstractclass InitializedOpmode extends GamepadOpMode {
+public abstract class InitializedOpmode extends GamepadOpMode {
     public CuttleRevHub ctrlHub;
     public CuttleRevHub expHub;
 
@@ -84,10 +86,11 @@ public abstractclass InitializedOpmode extends GamepadOpMode {
     public CuttleMotor rightFrontMotor;
     public CuttleMotor rightBackMotor ;
     public CuttleMotor leftBackMotor  ;
+    MecanumController chassis;
 
     @Override
-    public void onInit()
-    {
+    public void onInit(){
+        //Runs when the OpMode is initialized
         ctrlHub = new CuttleRevHub(hardwareMap,CuttleRevHub.HubTypes.CONTROL_HUB);
         expHub = new CuttleRevHub(hardwareMap,"Expansion Hub 2");
 
@@ -98,15 +101,52 @@ public abstractclass InitializedOpmode extends GamepadOpMode {
 
         leftBackMotor.setDirection(Direction.REVERSE);
         leftFrontMotor.setDirection(Direction.REVERSE);
-
+        chassis = new MecanumController(rightFrontMotor,rightBackMotor,leftFrontMotor,leftBackMotor);
     }
     @Override
     public void main() {
+        //Runs when the OpMode is started
     }
     public void mainLoop()
     {
+        //Runs repeatedly after the OpMode is started
         ctrlHub.pullBulkData();
         expHub.pullBulkData();
     }
 }
 ```
+Here is how you would create a basic driver opmode using that initialized opmode:
+```java
+@TeleOp(name="Driver Opmode", group="Example")
+public abstract class DriverOpMode extends InitializedOpmode {
+    @Override
+    public void onInit()
+    {
+        super.onInit();
+        // Put OpMode specific init code here
+    }
+
+    @Override
+    public void main() {
+        super.main();
+        // Put OpMode specific main code here
+    }
+
+    public void mainLoop(){
+        super.mainLoop();
+        chassis.setVec(new Pose(gamepad1.left_stick_x,-gamepad1.left_stick_y,-gamepad1.right_stick_x));
+    }
+}
+```
+If you don't have any opmode specific init or main code, those functions can be ommited:
+```java
+@TeleOp(name="Driver Opmode", group="Example")
+public abstract class DriverOpMode extends InitializedOpmode {
+    public void mainLoop(){
+        super.mainLoop();
+        chassis.setVec(new Pose(gamepad1.left_stick_x,-gamepad1.left_stick_y,-gamepad1.right_stick_x));
+    }
+}
+```
+
+***Make sure to run super.{insert function name here}() at the top of the onInit, main, and mainLoop functions in opmodes implementing your Initialized Opmode***. If you don't do this the code from your initialized opmode will not be executed.

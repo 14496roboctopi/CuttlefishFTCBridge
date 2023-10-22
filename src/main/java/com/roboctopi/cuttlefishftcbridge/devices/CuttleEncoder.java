@@ -32,6 +32,10 @@ public class CuttleEncoder implements RotaryEncoder
     {
         return 2*Math.PI*getCounts()/encTicks*direction;
     }
+    public double getVelocity()
+    {
+        return 2*Math.PI*hub.bulkData.getEncoderVelocity(mPort)/encTicks*direction;
+    }
 
     /**
      * Get the number of counts that the encoder has turned
