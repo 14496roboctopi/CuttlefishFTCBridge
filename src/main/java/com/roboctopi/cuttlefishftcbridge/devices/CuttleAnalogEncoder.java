@@ -37,6 +37,23 @@ public class CuttleAnalogEncoder implements RotaryEncoder
     {
         return  rFullToHalf(2*Math.PI*getVoltage()/maxVoltage*direction+rotationOffset);
     }
+    private long pT = System.nanoTime();
+    private double pPos = 0;
+    private double velocity = 0;
+    /**
+     * Get the velocity of the encoder. Will not account for roll over and assumes that this function is being run every at least once every cycle
+     * */
+    @Override
+    public double getVelocity()
+    {
+        if(hub.last_bulk_pull_time_ns != pT)
+        {
+            double dT = (double)(hub.last_bulk_pull_time_ns - pT)/(1000.0*1000.0*1000.0);
+            velocity = (this.getRotation()-pPos)/dT;
+            pPos = this.getRotation();
+        }
+        return velocity;
+    }
 
     /**
      * Get the voltage of the analog sensor.

@@ -39,6 +39,8 @@ import java.util.concurrent.TimeUnit;
 public class CuttleRevHub  extends LynxCommExceptionHandler implements RobotArmingStateNotifier.Callback {
 
    boolean armed = false;
+
+   long last_bulk_pull_time_ns = System.nanoTime();
    @Override
    public synchronized void onModuleStateChange(RobotArmingStateNotifier module, RobotArmingStateNotifier.ARMINGSTATE state) {
       armed = module.getArmingState() == RobotArmingStateNotifier.ARMINGSTATE.ARMED;
@@ -405,7 +407,6 @@ public class CuttleRevHub  extends LynxCommExceptionHandler implements RobotArmi
       // TODO revHub.sendCommand(cmd);
 
       bulkData.updateData((LynxGetBulkInputDataResponse) sendCommandReceiveSync(cmd));
-
       //System.out.println(revHub.getDeviceName());
 
 //      for (int i = 0; i < 4; i++)

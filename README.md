@@ -1,7 +1,7 @@
 # Module CuttlefishFTCBridge
 
 ### Overview
-Throughout our FTC journey, we have noticed certain shortcomings in the stock rev robotics device system. First, the config system can be extremely annoying to use as the config must be changed in the app and cannot be adjusted directly in code, in addition to several other issues. Next, there are often performance issues when using lots of sensors as each one has to poll the hub individually. Finally, there is a lot of functionality available through the LynxCommand API that is not exposed by the built-in device classes that can be extremely useful.
+Throughout our FTC journey, we have noticed certain shortcomings in the stock rev robotics device system. First, the config system can be extremely inconvenient to use as the config must be changed in the app and cannot be adjusted directly in code, in addition to several other issues. Next, there are often performance issues when using lots of sensors as each one has to poll the hub individually. Finally, there is a lot of functionality available through the LynxCommand API that is not exposed by the built-in device classes that can be extremely useful.
 In order to combat these issues, we have created our own device system as an alternative to the stock device system that accesses features directly through LynxCommands.
 This replaces classes like `DcMotor` with custom classes like `CuttleMotor`.
 
