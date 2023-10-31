@@ -12,7 +12,10 @@ This library also acts as a bridge between the main Cuttlefish library and the F
 ## Installation
 
 ### Basic
-
+Open build.dependencies.gradle and add the following line to the dependecies sections
+```groovy
+implementation 'com.roboctopi:CuttlefishFTCBridge:1.0.0'
+```
 ### Advanced
 Here is how to add CuttlefishFTCBridge to your project directly as a repository. This is useful if you are planning to modify the library yourself
 

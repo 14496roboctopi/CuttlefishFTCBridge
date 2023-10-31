@@ -66,7 +66,7 @@ publishing {
                     sign publishing.publications
 //                    sign configurations.archives
                 }
-                name = group+":"+archivesBaseName
+                name = groupId+":"+archivesBaseName
                 description = 'CuttlefishFTCBridge is a library for FTC that acts as an interface between the main Cuttlefish library and the FTC SDK, and provides extra functionality such as automatic bulk-read and direct access by port.'
                 url = 'https://14496roboctopi.github.io/cuttlefish/'
                 licenses {
