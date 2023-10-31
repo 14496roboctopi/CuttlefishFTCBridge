@@ -1,0 +1,109 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+//
+//task androidJavadoc(type: Javadoc) {
+//    source = "src/main/java"
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    println("CLASSPATH THING: " + classpath);
+//    android.libraryVariants.all { variant ->
+//        if (variant.name == 'release') {
+//            owner.classpath += variant.javaCompileProvider.get().classpath
+//        }
+//    }
+//
+//    exclude '**/R.html', '**/R.*.html', '**/index.html'
+//    options.encoding 'utf-8'
+//    options {
+//        addStringOption 'docencoding', 'utf-8'
+//        addStringOption 'charset', 'utf-8'
+//        links 'https://docs.oracle.com/javase/7/docs/api/'
+//        links 'https://d.android.com/reference'
+//        links 'https://developer.android.com/reference/androidx/'
+//    }
+//}
+//
+//task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
+//    archiveClassifier.set('javadoc')
+//    from androidJavadoc.destinationDir
+//
+//    preserveFileTimestamps = false
+//    reproducibleFileOrder = true
+//}
+//
+//task javaSourcesJar(type: Jar) {
+//    archiveClassifier.set('sources')
+//    from android.sourceSets.main.java.srcDirs
+//
+//    preserveFileTimestamps = false
+//    reproducibleFileOrder = true
+//}
+task dokkaJavadocJar(type: Jar) {
+    dokkaJavadocJar.dependsOn(dokkaJavadoc)
+    archiveClassifier = 'javadoc'
+    from "build/dokka/javadoc"
+}
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from "src/main/java"
+}
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            artifactId = "CuttlefishFTCBridge"
+            version = "1.0.0"
+            groupId = 'com.roboctopi'
+
+            afterEvaluate {
+                from components.release
+            }
+
+            pom {
+                signing {
+                    sign publishing.publications
+//                    sign configurations.archives
+                }
+                name = group+":"+archivesBaseName
+                description = 'CuttlefishFTCBridge is a library for FTC that acts as an interface between the main Cuttlefish library and the FTC SDK, and provides extra functionality such as automatic bulk-read and direct access by port.'
+                url = 'https://14496roboctopi.github.io/cuttlefish/'
+                licenses {
+                    license {
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'lmarsbrown'
+                        name = 'Logan Brown'
+                        email = 'lmarsbrown@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/14496roboctopi/CuttlefishFTCBridge.git'
+                    developerConnection = 'scm:git:ssh://github.com:14496roboctopi/CuttlefishFTCBridge.git'
+                    url = 'https://github.com/14496roboctopi/CuttlefishFTCBridge'
+                }
+            }
+            artifact dokkaJavadocJar
+            artifact sourcesJar
+        }
+    }
+    repositories {
+        maven {
+            // change URLs to point to your repos, e.g. http://my.org/repo
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = properties.getProperty("ossrhUsername")
+                password = properties.getProperty("ossrhPassword")
+            }
+
+        }
+    }
+}

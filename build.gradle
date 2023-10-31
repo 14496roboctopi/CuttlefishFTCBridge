@@ -2,6 +2,8 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 android {
     namespace 'com.roboctopi.cuttlefishftcbridge'
@@ -10,6 +12,7 @@ android {
         mavenCentral()
         google()
     }
+
 
     defaultConfig {
         minSdk 24
@@ -30,21 +33,23 @@ android {
         jvmTarget = '1.8'
     }
 }
-task generateSourcesJar(type: Jar) {
-    archiveClassifier  = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
+
+//
+
+
 dependencies {
     implementation project(path: ':cuttlefish')
 
-    implementation 'org.firstinspires.ftc:Inspection:9.0.0'
-    implementation 'org.firstinspires.ftc:Blocks:9.0.0'
-    implementation 'org.firstinspires.ftc:Tfod:9.0.0'
-    implementation 'org.firstinspires.ftc:RobotCore:9.0.0'
-    implementation 'org.firstinspires.ftc:RobotServer:9.0.0'
-    implementation 'org.firstinspires.ftc:OnBotJava:9.0.0'
-    implementation 'org.firstinspires.ftc:Hardware:9.0.0'
-    implementation 'org.firstinspires.ftc:FtcCommon:9.0.0'
-    implementation 'org.firstinspires.ftc:Vision:9.0.0'
+    implementation 'org.firstinspires.ftc:Inspection:9.0.1'
+    implementation 'org.firstinspires.ftc:Blocks:9.0.1'
+    implementation 'org.firstinspires.ftc:Tfod:9.0.1'
+    implementation 'org.firstinspires.ftc:RobotCore:9.0.1'
+    implementation 'org.firstinspires.ftc:RobotServer:9.0.1'
+    implementation 'org.firstinspires.ftc:OnBotJava:9.0.1'
+    implementation 'org.firstinspires.ftc:Hardware:9.0.1'
+    implementation 'org.firstinspires.ftc:FtcCommon:9.0.1'
+    implementation 'org.firstinspires.ftc:Vision:9.0.1'
     implementation 'org.firstinspires.ftc:gameAssets-CenterStage:1.0.0'
 }
+
+apply from: './publish-package.gradle'

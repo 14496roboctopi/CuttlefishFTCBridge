@@ -14,6 +14,8 @@ public class CuttleEncoder implements RotaryEncoder
     private int direction = 1;
     public int mPort;
 
+    double home = 0.0;
+
     /**
      * @param revHub
      * @param port Motor port of the encoder
@@ -23,6 +25,7 @@ public class CuttleEncoder implements RotaryEncoder
         hub = revHub;
         encTicks = countsPerRevolution;
         mPort = port;
+        home += getRotation()*direction;
     }
 
     /**
@@ -30,7 +33,7 @@ public class CuttleEncoder implements RotaryEncoder
      * */
     public double getRotation()
     {
-        return 2*Math.PI*getCounts()/encTicks*direction;
+        return (2*Math.PI*getCounts()/encTicks - home)*direction;
     }
     public double getVelocity()
     {

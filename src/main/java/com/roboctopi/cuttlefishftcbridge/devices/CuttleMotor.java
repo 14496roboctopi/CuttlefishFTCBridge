@@ -1,9 +1,8 @@
 package com.roboctopi.cuttlefishftcbridge.devices;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.roboctopi.cuttlefish.components.Motor;
-import com.roboctopi.cuttlefish.components.RotaryEncoder;
 import com.roboctopi.cuttlefish.utils.Direction;
-import com.roboctopi.cuttlefish.utils.MotorPositionController;
+import com.roboctopi.cuttlefish.controller.MotorPositionController;
 
 /**
  * Cuttlefish DCMotor implementation.
